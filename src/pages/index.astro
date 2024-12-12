@@ -15,7 +15,7 @@ const title = 'Pokémon Static - Home';
 
 	<section 
 		aria-label="Listado de Pokémons"
-		class="grid grid-cols-1 sm:grid-cols-4 md:grid-cols-5 gap-4 mt-5"
+		class="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-4 mt-5"
 	>
 		{ data.results.map((pokemon) => ( <PokemonCard url={pokemon.url} name={pokemon.name} /> )) }
 	</section>

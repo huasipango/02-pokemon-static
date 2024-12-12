@@ -22,7 +22,8 @@ const imageSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
         ]
     }
 >
-    <img 
+    <img
+        transition:name={`${name}-image`}
         class:list={[
             {
                 'w-26 h-26': isBig,

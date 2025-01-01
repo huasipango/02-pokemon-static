@@ -5,6 +5,7 @@ import type { PokemonListResponse } from "@interfaces/pokemon-list.response";
 import MainLayout from "@layouts/MainLayout.astro";
 import PokemonCard from "@components/pokemons/PokemonCard.astro";
 import Title from "@components/shared/Title.astro";
+import { Icon } from "astro-icon/components";
 
 export const getStaticPaths = ( async () => {
     
@@ -24,7 +25,7 @@ const { name } = Astro.params;
 const { url } = Astro.props;
 
 const id = url.split('/').at(-2);
-console.log(id);
+console.log("id= ", id);
 
 const audioSrc = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`;
 const imageSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${ id }.png`;
@@ -38,10 +39,20 @@ const imageSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
 >
 
     <section class="mt-10 mx-10 flex flex-col justify-center items-center">
-        <div> 
-            <button onclick="history.back()" class="text-blue-500">Regresar</button>
-            <Title>{name}</Title>
+        
+        <div class="flex flex-row"> 
+            <div> 
+                <button onclick="history.back()" class="text-blue-500">Regresar</button>
+                <Title>{name}</Title>
+            </div>
+
+            <button id="btn-favorite" class="ml-4" data-id={id} data-name={name}> 
+                <Icon data-outline name="heart-outline" size={50}  />
+                <Icon data-full class=hidden name="heart-full" size={50}  />
+            </button>
         </div>
+        
+        
 
         <PokemonCard url={url} name={name} isBig />
 
@@ -52,8 +63,62 @@ const imageSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
     </section>
 </MainLayout>
 
+<script>
+interface favoritePokemon {
+    id: number;
+    name: string;
+}
+
+let favoritePokemons: favoritePokemon[] = JSON.parse(
+    localStorage.getItem('favorites') ?? '[]'
+);
+     
+const btnFavorite = document.querySelector('#btn-favorite') as HTMLButtonElement;
+
+const name = btnFavorite.dataset.name ?? ""; 
+const id  = btnFavorite.dataset.id ?? "" ; 
+
+const heartOutline = btnFavorite.querySelector('[data-outline]') as HTMLElement;
+const heartFull = btnFavorite.querySelector('[data-full]') as HTMLElement;
+
+const isFavorite = favoritePokemons.some(fav => fav.name === name);
+
+if (isFavorite) {
+    heartOutline.classList.add('hidden');    
+    heartFull.classList.remove('hidden');    
+} 
+
+const toggleFavorite = () => {
+    const isFavorite = favoritePokemons.some(fav => fav.name === name);
+
+    if(isFavorite){
+        console.log(favoritePokemons);
+        favoritePokemons = favoritePokemons.filter(fav => fav.name !== name);
+        console.log(favoritePokemons);
+    }else{
+        favoritePokemons.push({
+            id: +id,
+            name: name 
+        })
+    }
+    localStorage.setItem('favorites', JSON.stringify(favoritePokemons)); 
+}
+
+btnFavorite.addEventListener("click", ()=>{    
+    heartOutline.classList.toggle('hidden'); 
+    heartFull.classList.toggle('hidden'); 
+    toggleFavorite(); 
+}) 
+
+</script>
+
+
 <style>
     a{
         @apply hover:underline text-blue-500;
     }
+
+    #btn-favorite{
+        @apply hover:animate-pulse;
+     }
 </style>

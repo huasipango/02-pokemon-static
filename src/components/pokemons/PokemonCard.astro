@@ -1,4 +1,6 @@
 ---
+import { Card, Flex, Text } from '@radix-ui/themes';
+
 interface Props {
     url: string;
     name: string;
@@ -11,35 +13,21 @@ const imageSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprit
 
 ---
     
-<a
-    href={`/pokemons/${name}`}
-    class:list={
-        [
-            `rounded flex flex-col justify-center items-center p-2`,
-            {
-                border: !isBig,
-            }
-        ]
-    }
->
-    <img
-        transition:name={`${name}-image`}
-        class:list={[
-            {
-                'w-26 h-26': isBig,
-                'w-16 h-16': !isBig,
-            }
-        ]}
-        src={imageSrc} alt={name}
-    >	 
-    <span 
-        class:list={
-            [
-                `capitalize text-center`,
-                {
-                    'text-3xl': isBig,
-                }
-            ]
-        }
-    >#{id} {name}</span>
-</a>
+<Card asChild>
+    <a href={`/pokemons/${name}`} style={{ textDecoration: 'none' }}>
+        <Flex direction="column" align="center" justify="center" gap="2" className="p-2">
+            <img
+                transition:name={`${name}-image`}
+                src={imageSrc}
+                alt={name}
+                width={isBig ? 104 : 64}
+                height={isBig ? 104 : 64}
+            />
+            <Text
+                as="span"
+                size={isBig ? '5' : '3'}
+                className="capitalize text-center"
+            >#{id} {name}</Text>
+        </Flex>
+    </a>
+</Card>
